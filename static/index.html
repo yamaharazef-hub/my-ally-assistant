@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101316"><title>Ally — your personal assistant</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">A<span>✳</span></span><div><strong>ALLY</strong><small>YOUR PERSONAL AI</small></div></div>
+    <button class="new-chat" id="new-chat"><span>＋</span> New conversation <kbd>↗</kbd></button>
+    <div class="side-label">YOUR WORKSPACE</div>
+    <div class="nav-item active"><span class="nav-icon">◉</span> Assistant <span class="nav-arrow">↗</span></div>
+    <div class="sidebar-bottom"><div class="side-card"><span class="side-card-icon">✳</span><strong>Made for your Ally.</strong><p>A little more power for everything you do.</p><span class="side-version">PERSONAL ASSISTANT&nbsp; / &nbsp;V1.0</span></div><div class="profile"><span class="avatar">Y</span><div><strong>Player one</strong><small>Ready when you are</small></div><span class="profile-dots">•••</span></div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="breadcrumb"><span>WORKSPACE</span><b>/</b> ASSISTANT</div><div class="top-actions"><span class="status" id="status"><i></i><span>Checking setup</span></span><button class="sound-button" id="sound" aria-pressed="false" title="Toggle spoken replies"><span id="sound-icon">◖))</span> <span class="sound-label">Voice off</span></button></div></header>
+    <div class="content" id="content">
+      <section class="welcome" id="welcome">
+        <div class="eyebrow"><span class="sparkle">✳</span> YOUR EVERYDAY CO-PILOT <span class="dash"></span> BUILT FOR ALLY X</div>
+        <h1>Hey, player one.<br><span>What’s the plan?</span></h1>
+        <p class="intro">Your games, your questions, your day. I’m here to help you make the most of it all.</p>
+        <div class="section-heading"><span>GET STARTED</span><span>JUST A FEW IDEAS <b>↘</b></span></div>
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="Help me optimize my ROG Ally X running Bazzite for a smooth gaming session."><span class="card-icon lime">✳</span><span class="card-arrow">↗</span><strong>Optimize my setup</strong><small>Get more from your Ally X</small></button>
+          <button class="suggestion" data-prompt="Recommend a game for me. Ask me a few questions about what I like first."><span class="card-icon lilac">♧</span><span class="card-arrow">↗</span><strong>Find my next game</strong><small>Something good is waiting</small></button>
+          <button class="suggestion" data-prompt="Help me make a simple plan for today. Start by asking what I need to get done."><span class="card-icon peach">☼</span><span class="card-arrow">↗</span><strong>Plan my day</strong><small>Let's make a little room</small></button>
+        </div>
+      </section>
+      <section id="conversation" class="conversation" aria-live="polite" aria-label="Conversation" hidden></section>
+      <div class="composer-area">
+        <div class="composer"><textarea id="input" rows="1" maxlength="8000" placeholder="Ask me anything..." aria-label="Message Ally"></textarea><div class="composer-footer"><span class="composer-hint"><span>✦</span> YOUR AI COMPANION</span><div class="composer-actions"><button class="mic" id="mic" aria-label="Start voice input" title="Start voice input">♩</button><button class="send" id="send" aria-label="Send message" title="Send message">↑</button></div></div></div>
+        <div class="under-composer"><span>Ally can make mistakes. Check important information.</span><span><kbd>ENTER</kbd> TO SEND <span class="divider">/</span> <kbd>SHIFT + ENTER</kbd> FOR NEW LINE</span></div>
+        <p class="feedback" id="feedback" role="status"></p>
+      </div>
+    </div>
+    <footer class="footer"><span>✳ &nbsp; MADE FOR THE WAY YOU PLAY</span><span>ALLY ASSISTANT &nbsp; © 2026</span></footer>
+  </main>
+</div>
+</body></html>
