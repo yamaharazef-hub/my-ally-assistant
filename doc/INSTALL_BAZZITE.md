@@ -1,3 +1,8 @@
+> ℹ️ **One install = everything.** Releases are cumulative — installing the
+> latest version gives you the assistant, Armoury Crate (Xbox Ally X
+> presets) and Steam Game Mode integration all at once. No need to
+> install older releases first.
+
 # 🎮 Step-by-Step: My Ally Assistant + Armoury Crate on Bazzite
 
 Complete walkthrough for the **ROG Xbox Ally X** (RC73XA, Ryzen AI Z2 Extreme)
