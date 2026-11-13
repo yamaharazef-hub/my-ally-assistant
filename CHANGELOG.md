@@ -5,6 +5,30 @@ All notable changes to **My Ally Assistant** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — "Xbox Ally X" — 2026-11-13
+
+### Added
+
+- **ROG Xbox Ally X (RC73XA, Ryzen AI Z2 Extreme) first-class support**
+  - DMI model-code detection for the whole Ally family:
+    RC71L (Ally 2023), RC72LA (Ally X 2024), RC73YA (Xbox Ally),
+    RC73XA (Xbox Ally X) — plus catch-alls for future variants
+  - Per-device official Armoury Crate wattage presets; Xbox Ally X gets
+    Turbo 25W battery / **35W on AC** (its real Windows values)
+- `doc/INSTALL_BAZZITE.md` — complete step-by-step installation guide
+  for Bazzite on the Xbox Ally X (also covers Ally/Ally X), including
+  venv setup, launcher, NLTK data, sudo rules, HHD co-existence and
+  troubleshooting
+- 8 new detection/preset tests (28 armoury tests total)
+
+### Fixed
+
+- RGB LED driver handling: respect `max_brightness` scale (Ally joystick
+  rings are 0-100, not 0-255) and select the static `monocolor` effect
+  when the driver exposes one
+- `armoury profile` no longer force-applies handheld TDP presets on
+  laptops/unknown devices (uses power-profiles-daemon only there)
+
 ## [1.1.0] — "Armoury" — 2026-11-13
 
 ### Added

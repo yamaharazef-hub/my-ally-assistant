@@ -21,11 +21,14 @@ assistant never crashes on unsupported devices.
 from packages.armoury.system import (  # noqa: F401
     Device,
     detect_device,
+    device_label,
     is_bazzite,
 )
 from packages.armoury.status import get_status  # noqa: F401
 from packages.armoury.power import (  # noqa: F401
     PROFILES,
+    DEVICE_PROFILES,
+    profiles_for,
     get_power_profile,
     set_power_profile,
     get_tdp,

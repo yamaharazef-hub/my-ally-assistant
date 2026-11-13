@@ -50,15 +50,17 @@ def _show_dashboard(ally):
     ally.say("")
     ally.say(Fore.MAGENTA + Style.BRIGHT
              + "    ⚔  ARMOURY CRATE  —  Ally Edition (Bazzite/Linux)" + Fore.RESET)
-    device_tag = {
-        armoury.Device.ROG_ALLY: "ROG Ally detected ✓",
-        armoury.Device.ASUS_LAPTOP: "ASUS laptop detected ✓",
-        armoury.Device.GENERIC: "generic Linux device",
-    }[status["device_kind"]]
+    label = armoury.device_label(status["device_kind"])
+    known = status["device_kind"] != armoury.Device.GENERIC
     bazzite_tag = (" | Bazzite ✓" if status["is_bazzite"]
                    else " | (not Bazzite — works anyway)")
     model = status["device_model"]
-    device_line = f"{model} — {device_tag}" if model != "Unknown device" else device_tag
+    if model != "Unknown device":
+        device_line = f"{model} — {label}"
+    else:
+        device_line = label
+    if known:
+        device_line += " ✓"
     ally.say(Fore.CYAN + f"    {device_line}{bazzite_tag}"
              + Fore.RESET)
     ally.say(Fore.MAGENTA + "    " + "─" * 52 + Fore.RESET)
@@ -95,8 +97,9 @@ def _show_help(ally):
         "  armoury                    — status dashboard + quick menu",
         "  armoury status             — hardware dashboard",
         "  armoury profile silent|performance|turbo",
-        "                               (sets power-profiles-daemon + TDP preset;",
-        "                                turbo = 25W battery / 30W on AC)",
+        "                               (power-profiles-daemon + TDP preset with",
+        "                                your device's official wattage, e.g. turbo",
+        "                                = 25W battery / 35W AC on Xbox Ally X)",
         "  armoury tdp <4-65>         — APU TDP limit in watts (sudo)",
         "  armoury fan <0-100|auto>   — fan speed % (sudo)",
         "  armoury rgb <colour>       — " + ", ".join(sorted(armoury.COLORS)),

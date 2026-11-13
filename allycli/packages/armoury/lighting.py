@@ -69,11 +69,25 @@ def _set_rgb_leds(r, g, b):
     for led in leds:
         ok_intensity = _write(os.path.join(led, "multi_intensity"),
                               f"{r} {g} {b}")
-        brightness = _read(os.path.join(led, "max_brightness")) or "255"
-        ok_bright = _write(
-            os.path.join(led, "brightness"),
-            "255" if (r or g or b) and brightness.isdigit() else brightness
-            if (r or g or b) else "0")
+
+        # brightness scale differs per driver (some are 0-255, Ally
+        # joystick rings are 0-100) — always drive at the node maximum
+        max_brightness = _read(os.path.join(led, "max_brightness")) or "255"
+        if not max_brightness.isdigit():
+            max_brightness = "255"
+
+        if r or g or b:
+            # switch to steady static colour where the driver exposes
+            # an effect list (Ally rings: monocolor, breathe, rainbow...)
+            effect = os.path.join(led, "effect")
+            available = (_read(os.path.join(led, "effect_index")) or "").lower()
+            if os.path.exists(effect) and "monocolor" in available:
+                _write(effect, "monocolor")
+            target_brightness = max_brightness
+        else:
+            target_brightness = "0"
+        ok_bright = _write(os.path.join(led, "brightness"), target_brightness)
+
         # disable any blinking trigger -> steady static light
         trigger = os.path.join(led, "trigger")
         if (r or g or b) and os.path.exists(trigger):

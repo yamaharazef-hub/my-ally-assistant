@@ -16,18 +16,52 @@ battery, 30 W while plugged in.
 import glob
 import re
 
-from packages.armoury.system import run, run_privileged, which, _read
+from packages.armoury.system import (
+    Device, detect_device, run, run_privileged, which, _read,
+    HANDHELD_DEVICES)
 
 # name -> (power-profiles-daemon profile, TDP on battery W, TDP on AC W)
+# Defaults follow Armoury Crate on the original ROG Ally (2023).
 PROFILES = {
     "silent": ("power-saver", 10, 13),
     "performance": ("balanced", 15, 17),
     "turbo": ("performance", 25, 30),
 }
 
-# Safety limits (Watts) — wide enough for laptops, sane for handhelds
+# Official Armoury-Crate wattage per Ally model.
+# ROG Ally X 2024: Silent 13W / Performance 17W / Turbo 25W (30W on AC)
+# ROG Xbox Ally (Z2 A Go, 2025): efficient small chip profile
+# ROG Xbox Ally X (Z2 Extreme, 2025): 13W / 17W / 25W, Turbo AC = 35W
+DEVICE_PROFILES = {
+    Device.ALLY: PROFILES,
+    Device.ALLY_X: {
+        "silent": ("power-saver", 13, 15),
+        "performance": ("balanced", 17, 20),
+        "turbo": ("performance", 25, 30),
+    },
+    Device.XBOX_ALLY: {
+        "silent": ("power-saver", 7, 9),
+        "performance": ("balanced", 13, 15),
+        "turbo": ("performance", 17, 20),
+    },
+    Device.XBOX_ALLY_X: {
+        "silent": ("power-saver", 13, 15),
+        "performance": ("balanced", 17, 20),
+        "turbo": ("performance", 25, 35),
+    },
+}
+
+# Safety limits (Watts) — covers 35W Turbo (AC) on the Xbox Ally X,
+# wide enough for laptops too
 TDP_MIN = 4
 TDP_MAX = 65
+
+
+def profiles_for(device_kind=None):
+    """Profile presets for a device kind (auto-detected when not given)."""
+    if device_kind is None:
+        device_kind, _ = detect_device()
+    return DEVICE_PROFILES.get(device_kind, PROFILES)
 
 
 def get_power_profile():
@@ -102,23 +136,41 @@ def get_tdp():
     return None
 
 
-def apply_profile(name):
+def apply_profile(name, device_kind=None):
     """Apply an Armoury-Crate-style profile end to end.
+
+    Uses the device's official wattage presets. Automatic TDP presets
+    are only applied on recognised Ally handhelds (on laptops and
+    unknown devices only the power-profiles-daemon side is changed —
+    use `armoury tdp` for manual control there).
 
     Returns a list of (ok, message) results for each action taken.
     """
+    if device_kind is None:
+        device_kind, _ = detect_device()
+
+    profiles = profiles_for(device_kind)
     name = name.lower()
-    if name not in PROFILES:
+    if name not in profiles:
         return [(False,
                  f"Unknown profile '{name}'. Choose from: "
-                 + ", ".join(sorted(PROFILES)))]
+                 + ", ".join(sorted(profiles)))]
 
-    ppd, tdp_dc, tdp_ac = PROFILES[name]
+    ppd, tdp_dc, tdp_ac = profiles[name]
     results = [set_power_profile(ppd)]
-    watts = tdp_ac if is_on_ac_power() else tdp_dc
+
+    if device_kind not in HANDHELD_DEVICES:
+        results.append((True,
+                        "TDP preset skipped (handheld presets only) — "
+                        "use `armoury tdp <watts>` for manual control"))
+        return results
+
+    on_ac = is_on_ac_power()
+    watts = tdp_ac if on_ac else tdp_dc
     ok, msg = set_tdp(watts)
     if ok:
-        msg = f"TDP preset applied: {watts}W ({'AC (plugged in)' if is_on_ac_power() else 'battery'})"
+        msg = (f"TDP preset applied: {watts}W "
+               f"({'AC (plugged in)' if on_ac else 'battery'})")
     else:
         msg = f"TDP step skipped: {msg}"
     results.append((ok, msg))

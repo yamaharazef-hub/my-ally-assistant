@@ -15,12 +15,36 @@ import subprocess
 
 class Device:
     """Detected device classes — decides which backends we prefer."""
-    ROG_ALLY = "rog-ally"          # ROG Ally handheld (RC71L / RC72LA / X)
+    ALLY = "ally"                  # ROG Ally 2023 (RC71L) — Ryzen Z1 Extreme
+    ALLY_X = "ally-x"              # ROG Ally X 2024 (RC72LA) — Ryzen Z1 Extreme
+    XBOX_ALLY = "xbox-ally"        # ROG Xbox Ally (RC73YA) — Ryzen Z2 A Go
+    XBOX_ALLY_X = "xbox-ally-x"    # ROG Xbox Ally X (RC73XA) — Ryzen AI Z2 Extreme
     ASUS_LAPTOP = "asus-laptop"    # ROG/TUF laptop (asusctl territory)
     GENERIC = "generic"            # anything else
 
 
-ROG_ALLY_PRODUCTS = ("RC71", "RC72")
+# DMI product-name prefixes -> device class
+_HANDHELD_PREFIXES = {
+    "RC73XA": Device.XBOX_ALLY_X,
+    "RC73YA": Device.XBOX_ALLY,
+    "RC73": Device.XBOX_ALLY,      # catch-all for the 2025 Xbox Ally family
+    "RC72": Device.ALLY_X,
+    "RC71": Device.ALLY,
+}
+
+# Human-friendly labels per device class
+DEVICE_LABELS = {
+    Device.ALLY: "ROG Ally (2023)",
+    Device.ALLY_X: "ROG Ally X (2024)",
+    Device.XBOX_ALLY: "ROG Xbox Ally (2025)",
+    Device.XBOX_ALLY_X: "ROG Xbox Ally X (2025)",
+    Device.ASUS_LAPTOP: "ASUS laptop",
+    Device.GENERIC: "generic Linux device",
+}
+
+# Devices we consider handhelds (used to pick TDP presets)
+HANDHELD_DEVICES = (Device.ALLY, Device.ALLY_X,
+                    Device.XBOX_ALLY, Device.XBOX_ALLY_X)
 
 
 def _read(path):
@@ -94,14 +118,27 @@ def run_privileged(cmd, timeout=10):
 
 
 def detect_device():
-    """Best-effort device identification via DMI data."""
+    """Best-effort device identification via DMI data.
+
+    Returns (Device-kind, product-name). Handhelds are matched against
+    ASUS model codes: RC71L = Ally 2023, RC72LA = Ally X 2024,
+    RC73XA = Xbox Ally X, RC73YA = Xbox Ally (2025).
+    """
     vendor = (_read("/sys/class/dmi/id/sys_vendor") or "").lower()
-    product = (_read("/sys/class/dmi/id/product_name") or "")
+    product = _read("/sys/class/dmi/id/product_name") or ""
     if "asus" in vendor:
-        if product[:4] in ROG_ALLY_PRODUCTS:
-            return Device.ROG_ALLY, product
+        for code in sorted(_HANDHELD_PREFIXES, key=len, reverse=True):
+            if code in product:
+                return _HANDHELD_PREFIXES[code], product
         return Device.ASUS_LAPTOP, product
     return Device.GENERIC, product or "Unknown device"
+
+
+def device_label(kind=None):
+    """Display label for a device kind (auto-detected if not given)."""
+    if kind is None:
+        kind, _ = detect_device()
+    return DEVICE_LABELS.get(kind, "generic Linux device")
 
 
 def is_bazzite():

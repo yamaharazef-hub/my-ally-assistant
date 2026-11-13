@@ -79,24 +79,38 @@ gracefully with helpful hints when a feature isn't supported.
 ```
 ~> armoury
     ⚔  ARMOURY CRATE  —  Ally Edition (Bazzite/Linux)
-    ROG Ally RC71L — ROG Ally detected ✓ | Bazzite ✓
-    ────────────────────────────────────────────────────
-    APU/CPU : AMD Ryzen Z1 Extreme
+    ROG Xbox Ally X RC73XA — ROG Xbox Ally X (2025) ✓ | Bazzite ✓
+    ──────────────────────────────────────────────────────
+    APU/CPU : AMD Ryzen AI Z2 Extreme
     Temp    : 44.5°C (k10temp)    Fan: 3200 RPM — 50% (auto)
-    Profile : balanced   TDP: 30W   Source: AC
+    Profile : balanced   TDP: 35W   Source: AC
     Battery : 78% — Discharging (charge limit: 80%)
     ...
 ```
 
 | Command | What it does |
 |---|---|
-| `armoury` / `armoury status` | Hardware dashboard (APU, temps, fan, battery, profile, TDP) |
-| `armoury profile silent\|performance\|turbo` | Operating mode (power-profiles-daemon + TDP preset; turbo = 25W on battery, 30W on AC, like the real Armoury Crate) |
+| `armoury` / `armoury status` | Hardware dashboard (device detection, APU, temps, fan, battery, profile, TDP) |
+| `armoury profile silent\|performance\|turbo` | Operating mode (power-profiles-daemon + your device's official TDP preset) |
 | `armoury tdp 15` | Direct APU TDP limit via `ryzenadj` (4–65W) |
 | `armoury fan 60` / `armoury fan auto` | Manual fan speed or hardware auto-curve |
 | `armoury rgb green` / `armoury rgb #FF8800` / `armoury rgb off` | Aura-style lighting (kernel LED classdev → `asusctl` → OpenRGB backends) |
 | `armoury battery 80` | Battery care charge limit (like Armoury Crate's lifespan modes) |
 | `armoury help` | Full command reference |
+
+**Profile wattages match each device's real Armoury Crate presets**
+(auto-detected via DMI model codes):
+
+| Device | Silent | Performance | Turbo (battery) | Turbo (AC) |
+|---|---|---|---|---|
+| ROG Ally (RC71L, Z1 Extreme) | 10W | 15W | 25W | 30W |
+| ROG Ally X (RC72LA) | 13W | 17W | 25W | 30W |
+| ROG Xbox Ally (RC73YA, Z2 A) | 7W | 13W | 17W | 20W |
+| **ROG Xbox Ally X (RC73XA, Z2 Extreme)** | 13W | 17W | 25W | **35W** |
+| ASUS laptops / other Linux | ✓ profile only — use `armoury tdp` manually |
+
+📖 **Full step-by-step install for Bazzite** (incl. Xbox Ally X):
+[doc/INSTALL_BAZZITE.md](doc/INSTALL_BAZZITE.md)
 
 **Bazzite notes:** `powerprofilesctl` and `ryzenadj` ship with Bazzite
 handheld images; TDP/fan/battery writes need root (Ally will use `sudo`
