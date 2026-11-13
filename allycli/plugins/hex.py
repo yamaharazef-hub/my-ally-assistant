@@ -1,0 +1,22 @@
+from plugin import plugin
+from colorama import Fore
+
+
+@plugin("hex")
+def binary(ally, s):
+    """
+    Converts an integer into a hexadecimal number
+    """
+
+    if s == "":
+        s = ally.input("What's your number? ")
+    try:
+        n = int(s)
+    except ValueError:
+        ally.say("That's not a number!", Fore.RED)
+        return
+    else:
+        if n < 0:
+            ally.say("-" + hex(n).upper()[3:], Fore.YELLOW)
+        else:
+            ally.say(hex(n).upper()[2:], Fore.YELLOW)
