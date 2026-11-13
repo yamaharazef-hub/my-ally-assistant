@@ -118,6 +118,33 @@ automatically). If you use [HHD](https://github.com/hhd-dev/hhd), avoid
 double-managing TDP/fans from both tools. Works on non-Bazzite distros too —
 just install the tools it asks for.
 
+## 🎮 Game Mode (Steam Deck–style) integration
+
+Put Ally **right inside your Steam library** — in Game Mode on Bazzite
+(Xbox Ally X) or Steam Deck, it shows up like a game tile with custom
+artwork and launches into a terminal:
+
+```
+~> steam setup     # close Steam first! installs everything
+~> steam status    # see what's installed
+~> steam remove    # full cleanup
+```
+
+What `steam setup` does for every local Steam account:
+
+1. **Terminal wrapper** `~/.local/bin/ally-terminal` — auto-detects
+   Konsole (Bazzite KDE) / Ptyxis (Bazzite GNOME) / others at launch
+2. **Desktop entry** — so Steam's *Add a Non-Steam Game* can also find it
+3. **Steam shortcut** written straight into `shortcuts.vdf`
+   (with backup; idempotent — re-running never duplicates)
+4. **Library artwork** — portrait capsule, landscape grid, hero banner
+   and logo (Ally's robot mascot), keyed by the standard shortcut-id
+   algorithm so Steam picks them up automatically
+
+Then reboot into **Game Mode** and find *My Ally Assistant* in your
+library — launch it mid-game from the Steam menu to tweak TDP, fans or
+RGB without leaving your session.
+
 ## 🛠️ Getting Started
 
 ### Installation

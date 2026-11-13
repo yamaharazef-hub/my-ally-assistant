@@ -171,13 +171,34 @@ sudo chmod 440 /etc/sudoers.d/ally-armoury
   `/sys/class/leds/*:rgb:*` when the `hid-asus-ally` driver is active —
   `armoury rgb` finds them automatically.
 
-### Optional: launch from Game Mode
+### Game Mode: add Ally to your Steam library (recommended)
 
-Add a non-Steam shortcut that opens Konsole running Ally:
+My Ally Assistant can integrate itself into Steam so it appears in
+**Game Mode** like any game — with artwork — and opens in a terminal
+window when launched:
 
-- Konsole profile command: `ally`
-- or a `.desktop` entry in `~/.local/share/applications/` so Ally shows
-  up in your Steam library via "Add a non-Steam game".
+```bash
+# make sure Steam is fully closed first (it overwrites shortcuts.vdf)
+ally steam setup
+```
+
+This installs, for every local Steam account:
+
+- `~/.local/bin/ally-terminal` (auto-detects Konsole/Ptyxis/other terminals)
+- a desktop entry (also discoverable via Steam's *Add a Non-Steam Game*)
+- a real Steam shortcut in `shortcuts.vdf` (backed up first; re-running
+  `steam setup` never duplicates it)
+- library artwork (tile, capsule, hero banner, logo)
+
+Then `ally steam status` to verify, reboot into **Game Mode**, and Ally
+is in your library under *My Ally Assistant*. Launch it mid-game from
+the Steam overlay menu to change TDP/fans/RGB instantly.
+
+Remove everything later with:
+
+```bash
+ally steam remove
+```
 
 ---
 

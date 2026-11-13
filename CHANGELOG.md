@@ -5,6 +5,30 @@ All notable changes to **My Ally Assistant** will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] — "Game Mode" — 2026-11-13
+
+### Added
+
+- **Steam / Game Mode integration** — new `steam` plugin
+  (aliases: `gamemode`, `steamdeck`) that makes My Ally Assistant a
+  first-class tile in the Steam library on Bazzite / Steam Deck:
+  - `steam setup` — installs a DE-agnostic terminal wrapper
+    (`~/.local/bin/ally-terminal`: Konsole/Ptyxis/kgx/gnome-terminal/
+    alacritty/xterm auto-detect), a `.desktop` entry, a non-Steam-game
+    shortcut written directly into `shortcuts.vdf` (with `.bak` backup,
+    idempotent — re-runs never duplicate) and library artwork keyed by
+    Steam's shortcut-id algorithm (crc32 → appid64), for every local
+    Steam account found (native + Flatpak layouts)
+  - `steam status` / `steam remove` — inspect or fully uninstall
+  - custom AI-generated artwork set in `icons/`: `ally_icon.png`,
+    `steam_grid.png`, `steam_capsule.png`, `steam_hero.png`,
+    `steam_logo.png` (Ally robot mascot, cyan/purple neon)
+- `allycli/packages/steamint/` — stdlib-only binary `shortcuts.vdf`
+  parser/writer (lossless round-trip), Steam userdata discovery,
+  launcher + desktop-entry generators
+- 17 new tests (vdf round-trip incl. signed appids, shortcut ids,
+  setup/status/remove lifecycle, launcher/desktop generation)
+
 ## [1.2.0] — "Xbox Ally X" — 2026-11-13
 
 ### Added
